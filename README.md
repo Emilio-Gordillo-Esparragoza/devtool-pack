@@ -71,7 +71,3 @@ ruff check .
 ```bash
 pip install -e .[dev]
 ```
-
-## License
-
-MIT
