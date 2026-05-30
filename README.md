@@ -14,7 +14,15 @@ A modular CLI tool for installing DevOps tools (Terraform, AWS CLI, kubectl) acr
 
 ## Installation
 
+You can install DevToolPack directly from PyPI:
 ```bash
+pip install devtoolpack
+```
+
+If you want to install the latest development version or contribute to the project, you can install from source:
+```bash
+git clone https://github.com/Emilio-Gordillo-Esparragoza/devtoolpack.git
+cd devtoolpack
 pip install -e .
 ```
 

@@ -17,14 +17,17 @@ def validate_tool(tool_name: str, tool_instance) -> bool:
         # Also check if it's in PATH
         if shutil.which(tool_name):
             logger.info(f"[green]+[/green] {tool_name} is in PATH")
+            is_in_path = True
         else:
             logger.warning(
                 f"[yellow]![/yellow] {tool_name} is installed but not in PATH"
             )
+            is_in_path = False
     else:
         logger.warning(f"[-] {tool_name} is not installed")
+        is_in_path = False
 
-    return is_installed
+    return is_installed and is_in_path
 
 
 def validate_all() -> None:
