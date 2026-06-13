@@ -1,7 +1,5 @@
 import os
-import platform
 import subprocess
-from pathlib import Path
 from devpack.tools.base_tool import BaseTool
 from devpack.installer.downloader import download_file
 from devpack.env.path_manager import add_to_path

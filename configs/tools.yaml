@@ -18,3 +18,44 @@ kubectl:
   windows_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/windows/amd64/kubectl.exe"
   linux_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/linux/amd64/kubectl"
   darwin_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/darwin/amd64/kubectl"
+
+git:
+  name: git
+  version: "2.41.0"
+  windows_amd64_url: "https://github.com/git-for-windows/git/releases/download/v2.41.0.windows.3/PortableGit-2.41.0.3-64-bit.7z.exe"
+
+sam:
+  name: sam
+  version: "latest"
+  windows_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-windows-x86_64.zip"
+  linux_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip"
+  darwin_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-macos-x86_64.zip"
+
+localstack:
+  name: localstack
+  version: "latest"
+  install_method: pip
+
+cdk:
+  name: cdk
+  version: "latest"
+  install_method: npm
+
+docker:
+  name: docker
+  version: "latest"
+  windows_url: "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
+
+rust:
+  name: rust
+  version: "stable"
+  windows_url: "https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe"
+  linux_amd64_url: "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init"
+  darwin_amd64_url: "https://static.rust-lang.org/rustup/dist/x86_64-apple-darwin/rustup-init"
+
+golang:
+  name: go
+  version: "1.21.5"
+  windows_amd64_url: "https://go.dev/dl/go1.21.5.windows-amd64.zip"
+  linux_amd64_url: "https://go.dev/dl/go1.21.5.linux-amd64.tar.gz"
+  darwin_amd64_url: "https://go.dev/dl/go1.21.5.darwin-amd64.tar.gz"

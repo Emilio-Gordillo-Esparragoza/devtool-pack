@@ -1,5 +1,4 @@
 import os
-import platform
 from pathlib import Path
 from devpack.utils.logger import get_logger
 from devpack.env.shell_detector import detect_shell, get_shell_rc_path
