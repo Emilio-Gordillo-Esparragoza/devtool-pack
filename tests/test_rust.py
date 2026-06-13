@@ -10,9 +10,27 @@ def test_rust_tool_initialization():
     assert tool.bin_dir == Path.home() / ".devpack" / "bin"
 
 
-def test_rust_tool_download_url():
-    tool = RustTool()
-    assert "rustup-init" in tool.download_url
+def test_rust_download_url_windows():
+    with patch("devpack.tools.base_tool._current_os", return_value="windows"):
+        tool = RustTool()
+        assert "rustup-init" in tool.download_url
+        assert "windows" in tool.download_url
+
+
+def test_rust_download_url_linux():
+    with patch("devpack.tools.base_tool._current_os", return_value="linux"), \
+         patch("devpack.tools.base_tool._current_arch", return_value="amd64"):
+        tool = RustTool()
+        assert "rustup-init" in tool.download_url
+        assert "linux" in tool.download_url
+
+
+def test_rust_download_url_darwin():
+    with patch("devpack.tools.base_tool._current_os", return_value="darwin"), \
+         patch("devpack.tools.base_tool._current_arch", return_value="amd64"):
+        tool = RustTool()
+        assert "rustup-init" in tool.download_url
+        assert "darwin" in tool.download_url
 
 
 @patch("devpack.tools.rust.shutil.which")
@@ -45,7 +63,9 @@ def test_rust_tool_install(
     mock_path_class.return_value = mock_cargo_bin
 
     tool = RustTool()
-    with patch.object(tool, "is_installed", return_value=False):
+    fake_url = "https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe"
+    with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
         tool.install()
 
     mock_download_file.assert_called_once()

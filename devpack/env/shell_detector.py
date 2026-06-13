@@ -1,4 +1,5 @@
 import os
+import ntpath
 import platform
 from pathlib import Path
 from typing import Optional
@@ -15,7 +16,7 @@ def detect_shell() -> str:
     if platform.system() == "Windows":
         comspec = os.environ.get("COMSPEC", "")
         if comspec:
-            return Path(comspec).name.lower()
+            return ntpath.basename(comspec).lower()
         return "cmd.exe"
 
     # Default to sh if we can't detect

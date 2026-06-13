@@ -1,4 +1,3 @@
-import os
 from devpack.tools.base_tool import BaseTool
 from devpack.installer.downloader import download_file
 from devpack.installer.extractor import extract_archive
@@ -8,22 +7,26 @@ from devpack.env.path_manager import add_to_path
 class GolangTool(BaseTool):
     """Go (Golang) tool installer."""
 
+    config_key = "golang"
+
     def __init__(self):
         super().__init__("go")
 
     @property
     def download_url(self) -> str:
-        if os.name == "nt":
-            return "https://go.dev/dl/go1.21.5.windows-amd64.zip"
-        return "https://go.dev/dl/go1.21.5.linux-amd64.tar.gz"
+        return self._resolve_url()
 
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
             return
 
+        url = self.download_url
+        if not url:
+            raise RuntimeError("No download URL found for Go on this platform.")
+
         print(f"Downloading {self.name}...")
-        archive_path = download_file(self.download_url, self.bin_dir)
+        archive_path = download_file(url, self.bin_dir)
 
         print(f"Extracting {self.name}...")
         extract_archive(archive_path, self.bin_dir)

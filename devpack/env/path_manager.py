@@ -22,8 +22,8 @@ def _get_path_export_line(dir_path: Path, shell: str) -> str:
         return f'export PATH="{dir_str}:$PATH"'
 
 
-def _notify_environment_change():
-    """Notify the system that environment variables have changed."""
+def _notify_environment_change():  # pragma: no cover
+    """Notify the system that environment variables have changed (Windows only)."""
     if os.name == "nt":
         try:
             import ctypes
@@ -60,7 +60,7 @@ def add_to_path(directory: str) -> None:
         return
 
     # Persist PATH based on platform
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         # Windows: Update registry
         try:
             import winreg
@@ -134,7 +134,7 @@ def remove_from_path(directory: str) -> None:
         return
 
     # Remove from registry on Windows
-    if os.name == "nt":
+    if os.name == "nt":  # pragma: no cover
         try:
             import winreg
 

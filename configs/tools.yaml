@@ -1,35 +1,49 @@
-# Configuration for DevOps tools
+# Configuration for DevOps tools managed by devtoolpack.
+# URL keys follow the pattern: <os>_<arch>_url | <os>_url | url
+# Supported os tokens : windows | linux | darwin
+# Supported arch tokens: amd64 | arm64
+
 terraform:
   name: terraform
   version: "1.5.0"
   windows_amd64_url: "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_windows_amd64.zip"
   linux_amd64_url: "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_amd64.zip"
+  linux_arm64_url: "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_linux_arm64.zip"
   darwin_amd64_url: "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_darwin_amd64.zip"
+  darwin_arm64_url: "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_darwin_arm64.zip"
 
 awscli:
   name: aws
-  version: "2.0.0"
+  version: "2"
   windows_url: "https://awscli.amazonaws.com/AWSCLIV2.msi"
-  # For Linux/macOS, we'd use the bundled installer
+  linux_amd64_url: "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip"
+  linux_arm64_url: "https://awscli.amazonaws.com/awscli-exe-linux-aarch64.zip"
+  darwin_amd64_url: "https://awscli.amazonaws.com/AWSCLIV2.pkg"
+  darwin_arm64_url: "https://awscli.amazonaws.com/AWSCLIV2.pkg"
 
 kubectl:
   name: kubectl
   version: "v1.27.0"
   windows_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/windows/amd64/kubectl.exe"
   linux_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/linux/amd64/kubectl"
+  linux_arm64_url: "https://dl.k8s.io/release/v1.27.0/bin/linux/arm64/kubectl"
   darwin_amd64_url: "https://dl.k8s.io/release/v1.27.0/bin/darwin/amd64/kubectl"
+  darwin_arm64_url: "https://dl.k8s.io/release/v1.27.0/bin/darwin/arm64/kubectl"
 
 git:
   name: git
   version: "2.41.0"
   windows_amd64_url: "https://github.com/git-for-windows/git/releases/download/v2.41.0.windows.3/PortableGit-2.41.0.3-64-bit.7z.exe"
+  # Linux/macOS: installed via system package manager (apt/yum/brew) — no binary URL needed.
 
 sam:
   name: sam
   version: "latest"
   windows_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-windows-x86_64.zip"
   linux_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-x86_64.zip"
-  darwin_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-macos-x86_64.zip"
+  linux_arm64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-linux-arm64.zip"
+  darwin_amd64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-macos-x86_64.pkg"
+  darwin_arm64_url: "https://github.com/aws/aws-sam-cli/releases/latest/download/aws-sam-cli-macos-arm64.pkg"
 
 localstack:
   name: localstack
@@ -45,17 +59,23 @@ docker:
   name: docker
   version: "latest"
   windows_url: "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
+  # Linux: installed via https://get.docker.com convenience script — no static binary URL.
+  # macOS: Docker Desktop must be installed manually (no scripted install supported).
 
 rust:
   name: rust
   version: "stable"
   windows_url: "https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe"
   linux_amd64_url: "https://static.rust-lang.org/rustup/dist/x86_64-unknown-linux-gnu/rustup-init"
+  linux_arm64_url: "https://static.rust-lang.org/rustup/dist/aarch64-unknown-linux-gnu/rustup-init"
   darwin_amd64_url: "https://static.rust-lang.org/rustup/dist/x86_64-apple-darwin/rustup-init"
+  darwin_arm64_url: "https://static.rust-lang.org/rustup/dist/aarch64-apple-darwin/rustup-init"
 
 golang:
   name: go
   version: "1.21.5"
   windows_amd64_url: "https://go.dev/dl/go1.21.5.windows-amd64.zip"
   linux_amd64_url: "https://go.dev/dl/go1.21.5.linux-amd64.tar.gz"
+  linux_arm64_url: "https://go.dev/dl/go1.21.5.linux-arm64.tar.gz"
   darwin_amd64_url: "https://go.dev/dl/go1.21.5.darwin-amd64.tar.gz"
+  darwin_arm64_url: "https://go.dev/dl/go1.21.5.darwin-arm64.tar.gz"
