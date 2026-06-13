@@ -3,6 +3,13 @@ from devpack.utils.logger import get_logger
 from devpack.tools.terraform import TerraformTool
 from devpack.tools.awscli import AWSCLITool
 from devpack.tools.kubectl import KubectlTool
+from devpack.tools.git import GitTool
+from devpack.tools.sam import SamTool
+from devpack.tools.localstack import LocalStackTool
+from devpack.tools.cdk import CDKTool
+from devpack.tools.docker import DockerTool
+from devpack.tools.rust import RustTool
+from devpack.tools.golang import GolangTool
 
 logger = get_logger(__name__)
 
@@ -38,6 +45,13 @@ def validate_all() -> None:
         ("terraform", TerraformTool()),
         ("awscli", AWSCLITool()),
         ("kubectl", KubectlTool()),
+        ("git", GitTool()),
+        ("sam", SamTool()),
+        ("localstack", LocalStackTool()),
+        ("cdk", CDKTool()),
+        ("docker", DockerTool()),
+        ("rust", RustTool()),
+        ("golang", GolangTool()),
     ]
 
     all_valid = True
