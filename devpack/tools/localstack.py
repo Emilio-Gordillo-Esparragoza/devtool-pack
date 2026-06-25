@@ -9,6 +9,16 @@ from devpack.env.path_manager import add_to_path
 class LocalStackTool(BaseTool):
     """LocalStack tool installer (pip package)."""
 
+    package_names = {
+        "apt": "localstack",
+        "pacman": "localstack",
+        "dnf": "localstack",
+        "yum": "localstack",
+        "brew": "localstack",
+        "choco": "localstack",
+        "winget": "LocalStack.LocalStack",
+    }
+
     def __init__(self):
         super().__init__("localstack")
 
@@ -17,7 +27,10 @@ class LocalStackTool(BaseTool):
         return ""
 
     def is_installed(self) -> bool:
-        return shutil.which("localstack") is not None
+        return (
+            shutil.which("localstack") is not None
+            or self._is_installed_via_package_manager()
+        )
 
     def get_binary_path(self):
         path = shutil.which("localstack")
@@ -26,6 +39,10 @@ class LocalStackTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            print(f"{self.name} installed successfully.")
             return
 
         print(f"Installing {self.name} via pip...")

@@ -33,7 +33,7 @@ def test_cdk_tool_is_installed_true(mock_which):
 @patch("devpack.tools.cdk.shutil.which")
 @patch("devpack.tools.cdk.add_to_path")
 def test_cdk_tool_install(mock_add_to_path, mock_which, mock_subprocess):
-    mock_which.side_effect = ["/usr/bin/npm", "/usr/local/bin/cdk"]
+    mock_which.side_effect = ["/usr/bin/npm", "/usr/bin/npm", "/usr/local/bin/cdk"]
     tool = CDKTool()
     with patch.object(tool, "is_installed", return_value=False):
         tool.install()

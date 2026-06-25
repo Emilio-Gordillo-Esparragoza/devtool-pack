@@ -5,6 +5,7 @@
 [![CI](https://github.com/Emilio-Gordillo-Esparragoza/devtool-pack/actions/workflows/ci.yml/badge.svg)](https://github.com/Emilio-Gordillo-Esparragoza/devtool-pack/actions/workflows/ci.yml)
 [![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/devtoolpack.svg)](https://pypi.org/project/devtoolpack/)
 
 ---
 
@@ -12,7 +13,9 @@
 
 You join a new project. The README says *"install Terraform, kubectl, AWS CLI, and Docker before you start."* You spend the next hour hunting download pages, unzipping archives, figuring out why `terraform` isn't on your PATH, and wondering why the version you grabbed is different from what CI uses.
 
-DevToolPack removes that friction. One CLI, one command per tool, automatic PATH wiring — and it works the same way on Windows, macOS, and Linux (including Arch-based distros like CachyOS).
+DevToolPack removes that friction. One CLI, one command per tool, automatic PATH wiring — and it works the same way on Windows, macOS, and Linux (including Arch-based distros like CachyOS, Manjaro, EndeavourOS).
+
+**Smart installation strategy**: DevToolPack first tries your system package manager (`apt`, `pacman`, `dnf`, `yum`, `brew`, `choco`, `winget`) for faster, native installs with proper dependency handling. If unavailable, it falls back to official binary downloads.
 
 ---
 
@@ -47,6 +50,9 @@ Install a tool:
 devpack install terraform
 devpack install kubectl
 devpack install golang
+devpack install node        # required for CDK
+devpack install cdk         # auto-installs Node.js if needed
+devpack install docker      # uses pacman on Arch-based, script on others
 ```
 
 Check your environment:
@@ -67,20 +73,23 @@ devpack list-tools
 
 | Tool | Method | Windows | Linux | macOS |
 |---|---|---|---|---|
-| Terraform | Binary | ✅ | ✅ | ✅ |
-| AWS CLI | Binary/MSI | ✅ | ✅ | ✅ |
-| kubectl | Binary | ✅ | ✅ | ✅ |
-| Git | Binary/pkg manager | ✅ | ✅ | ✅ |
-| AWS SAM CLI | Binary | ✅ | ✅ | ✅ |
-| LocalStack | pip | ✅ | ✅ | ✅ |
-| AWS CDK | npm | ✅ | ✅ | ✅ |
-| Docker | Installer/script | ✅ | ✅ | — |
-| Rust | rustup | ✅ | ✅ | ✅ |
-| Go | Binary | ✅ | ✅ | ✅ |
+| Terraform | Binary / pkg manager | ✅ | ✅ | ✅ |
+| AWS CLI | Binary/MSI / pkg manager | ✅ | ✅ | ✅ |
+| kubectl | Binary / pkg manager | ✅ | ✅ | ✅ |
+| Git | Binary / pkg manager | ✅ | ✅ | ✅ |
+| AWS SAM CLI | Binary / pkg manager | ✅ | ✅ | ✅ |
+| LocalStack | pip / pkg manager | ✅ | ✅ | ✅ |
+| AWS CDK | npm (auto-installs Node.js) | ✅ | ✅ | ✅ |
+| Docker | Installer/script / pkg manager | ✅ | ✅ | — |
+| Rust | rustup / pkg manager | ✅ | ✅ | ✅ |
+| Go | Binary / pkg manager | ✅ | ✅ | ✅ |
+| Node.js | Binary / pkg manager | ✅ | ✅ | ✅ |
 
-Linux package manager support: `apt`, `pacman` (Arch/CachyOS/Manjaro), `dnf`, `yum`, `zypper`.
+**Package managers supported**: `apt` (Debian/Ubuntu), `pacman` (Arch/CachyOS/Manjaro/EndeavourOS), `dnf` (Fedora/RHEL), `yum` (CentOS/RHEL), `zypper` (openSUSE), `brew` (macOS), `choco`/`winget` (Windows).
 
-> Docker on macOS requires manual installation via [Docker Desktop](https://docs.docker.com/desktop/install/mac-install/).
+> **Docker on macOS** requires manual installation via [Docker Desktop](https://docs.docker.com/desktop/install/mac-install/).
+> **Docker on Arch-based Linux** (CachyOS, Manjaro, EndeavourOS) uses `pacman` + `systemctl` instead of the convenience script.
+> **AWS CDK** automatically installs Node.js via your system package manager if `npm` is missing.
 
 ---
 

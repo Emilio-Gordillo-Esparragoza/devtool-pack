@@ -9,6 +9,16 @@ class GolangTool(BaseTool):
 
     config_key = "golang"
 
+    package_names = {
+        "apt": "golang-go",
+        "pacman": "go",
+        "dnf": "golang",
+        "yum": "golang",
+        "brew": "go",
+        "choco": "golang",
+        "winget": "GoLang.Go",
+    }
+
     def __init__(self):
         super().__init__("go")
 
@@ -19,6 +29,15 @@ class GolangTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            go_binary = self.bin_dir / "go" / "bin" / self.binary_name
+            if go_binary.exists():
+                add_to_path(str(go_binary.parent))
+            else:
+                add_to_path(str(self.bin_dir))
+            print(f"{self.name} installed successfully.")
             return
 
         url = self.download_url

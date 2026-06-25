@@ -79,3 +79,12 @@ golang:
   linux_arm64_url: "https://go.dev/dl/go1.21.5.linux-arm64.tar.gz"
   darwin_amd64_url: "https://go.dev/dl/go1.21.5.darwin-amd64.tar.gz"
   darwin_arm64_url: "https://go.dev/dl/go1.21.5.darwin-arm64.tar.gz"
+
+node:
+  name: node
+  version: "20.11.0"
+  windows_amd64_url: "https://nodejs.org/dist/v20.11.0/node-v20.11.0-win-x64.zip"
+  linux_amd64_url: "https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-x64.tar.xz"
+  linux_arm64_url: "https://nodejs.org/dist/v20.11.0/node-v20.11.0-linux-arm64.tar.xz"
+  darwin_amd64_url: "https://nodejs.org/dist/v20.11.0/node-v20.11.0-darwin-x64.tar.gz"
+  darwin_arm64_url: "https://nodejs.org/dist/v20.11.0/node-v20.11.0-darwin-arm64.tar.gz"

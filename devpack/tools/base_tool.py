@@ -2,17 +2,33 @@ from abc import ABC, abstractmethod
 import os
 import platform
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Dict
 
 import yaml
 
+from devpack.env.package_manager import get_package_manager
+
 
 def _load_tools_config() -> dict:
-    """Load tools.yaml from the configs directory (repo root)."""
-    config_path = Path(__file__).parent.parent.parent / "configs" / "tools.yaml"
-    if config_path.exists():
-        with config_path.open() as f:
-            return yaml.safe_load(f) or {}
+    """Load tools.yaml from the configs directory.
+
+    Checks multiple locations:
+    1. Repo root (development): ../../../configs/tools.yaml
+    2. Package install (devpack/configs): ../../configs/tools.yaml
+    3. Package install (root configs): ../../../configs/tools.yaml (from hatch include)
+    """
+    base = Path(__file__).parent
+    candidates = [
+        base.parent.parent.parent / "configs" / "tools.yaml",  # repo root (dev)
+        base.parent.parent / "configs" / "tools.yaml",  # devpack/configs (installed)
+        base.parent.parent.parent
+        / "configs"
+        / "tools.yaml",  # root configs (installed via hatch)
+    ]
+    for config_path in candidates:
+        if config_path.exists():
+            with config_path.open() as f:
+                return yaml.safe_load(f) or {}
     return {}
 
 
@@ -41,10 +57,15 @@ class BaseTool(ABC):
     #: Subclasses may override; defaults to ``self.name``.
     config_key: Optional[str] = None
 
+    #: Mapping of package manager to package name.
+    #: e.g., {"apt": "terraform", "pacman": "terraform", "brew": "terraform"}
+    package_names: Dict[str, str] = {}
+
     def __init__(self, name: str):
         self.name = name
         self.bin_dir = Path.home() / ".devpack" / "bin"
         self.bin_dir.mkdir(parents=True, exist_ok=True)
+        self._pm = get_package_manager()
 
     @property
     def binary_name(self) -> str:
@@ -88,11 +109,36 @@ class BaseTool(ABC):
         """Download and install the tool."""
         pass
 
-    def is_installed(self) -> bool:
-        """Check if the tool binary exists in the bin directory."""
-        binary_path = self.get_binary_path()
-        return binary_path.is_file() and os.access(binary_path, os.X_OK)
-
     def get_binary_path(self) -> Path:
         """Full path to the installed binary."""
         return self.bin_dir / self.binary_name
+
+    def _install_via_package_manager(self) -> bool:
+        """Try to install the tool via system package manager.
+
+        Returns:
+            True if installation succeeded, False otherwise.
+        """
+        if not self.package_names:
+            return False
+
+        print(
+            f"Attempting to install {self.name} via system package manager ({self._pm.detect()})..."
+        )
+        success = self._pm.install([self.name], self.package_names)
+        if success:
+            print(f"{self.name} installed successfully via package manager.")
+        return success
+
+    def _is_installed_via_package_manager(self) -> bool:
+        """Check if tool is installed via package manager."""
+        if not self.package_names:
+            return False
+        return self._pm.is_installed(self.name, self.package_names)
+
+    def is_installed(self) -> bool:
+        """Check if the tool binary exists in the bin directory or via package manager."""
+        if self._is_installed_via_package_manager():
+            return True
+        binary_path = self.get_binary_path()
+        return binary_path.is_file() and os.access(binary_path, os.X_OK)

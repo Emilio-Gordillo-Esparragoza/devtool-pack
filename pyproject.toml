@@ -29,6 +29,7 @@ dev = [
 [tool.hatch.build]
 include = [
     "/devpack",
+    "/configs",
 ]
 
 [tool.ruff]

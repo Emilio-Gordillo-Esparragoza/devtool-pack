@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 from devpack.tools.base_tool import BaseTool
 from devpack.env.path_manager import add_to_path
+from devpack.tools.node import NodeTool
 
 
 class CDKTool(BaseTool):
@@ -22,15 +23,31 @@ class CDKTool(BaseTool):
         path = shutil.which("cdk")
         return Path(path) if path else self.bin_dir / self.binary_name
 
+    def _ensure_node(self) -> None:
+        """Ensure Node.js and npm are available."""
+        npm = shutil.which("npm")
+        if npm:
+            return
+
+        print("Node.js/npm not found. Installing Node.js...")
+        node_tool = NodeTool()
+        node_tool.install()
+
+        # Re-check after install
+        npm = shutil.which("npm")
+        if not npm:
+            raise RuntimeError("Failed to install Node.js. Please install it manually.")
+
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
             return
 
+        self._ensure_node()
+
         npm = shutil.which("npm")
         if not npm:
-            print("npm is required to install AWS CDK. Please install Node.js first.")
-            raise RuntimeError("npm not found")
+            raise RuntimeError("npm not available after Node.js installation")
 
         print(f"Installing {self.name} via npm...")
         subprocess.run([npm, "install", "-g", "aws-cdk"], check=True)

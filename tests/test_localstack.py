@@ -16,8 +16,12 @@ def test_localstack_tool_download_url():
 
 
 @patch("devpack.tools.localstack.shutil.which")
-def test_localstack_tool_is_installed_false(mock_which):
+@patch("devpack.env.package_manager.get_package_manager")
+@patch("devpack.env.package_manager.PackageManager.detect", return_value="none")
+def test_localstack_tool_is_installed_false(mock_detect, mock_get_pm, mock_which):
     mock_which.return_value = None
+    mock_pm = mock_get_pm.return_value
+    mock_pm.is_installed.return_value = False
     tool = LocalStackTool()
     assert not tool.is_installed()
 
@@ -32,8 +36,14 @@ def test_localstack_tool_is_installed_true(mock_which):
 @patch("devpack.tools.localstack.subprocess.run")
 @patch("devpack.tools.localstack.shutil.which")
 @patch("devpack.tools.localstack.add_to_path")
-def test_localstack_tool_install(mock_add_to_path, mock_which, mock_subprocess):
+@patch("devpack.env.package_manager.get_package_manager")
+@patch("devpack.env.package_manager.PackageManager.detect", return_value="none")
+def test_localstack_tool_install(
+    mock_detect, mock_get_pm, mock_add_to_path, mock_which, mock_subprocess
+):
     mock_which.return_value = "/usr/local/bin/localstack"
+    mock_pm = mock_get_pm.return_value
+    mock_pm.is_installed.return_value = False
     tool = LocalStackTool()
     with patch.object(tool, "is_installed", return_value=False):
         tool.install()

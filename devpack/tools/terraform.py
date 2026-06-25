@@ -10,6 +10,16 @@ class TerraformTool(BaseTool):
 
     config_key = "terraform"
 
+    package_names = {
+        "apt": "terraform",
+        "pacman": "terraform",
+        "dnf": "terraform",
+        "yum": "terraform",
+        "brew": "terraform",
+        "choco": "terraform",
+        "winget": "HashiCorp.Terraform",
+    }
+
     def __init__(self):
         super().__init__("terraform")
 
@@ -20,6 +30,11 @@ class TerraformTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            add_to_path(str(self.bin_dir))
+            print(f"{self.name} installed successfully.")
             return
 
         url = self.download_url

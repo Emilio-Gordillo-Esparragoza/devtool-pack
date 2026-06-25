@@ -10,6 +10,16 @@ class SamTool(BaseTool):
 
     config_key = "sam"
 
+    package_names = {
+        "apt": "aws-sam-cli",
+        "pacman": "aws-sam-cli",
+        "dnf": "aws-sam-cli",
+        "yum": "aws-sam-cli",
+        "brew": "aws-sam-cli",
+        "choco": "aws-sam-cli",
+        "winget": "Amazon.SAMCLI",
+    }
+
     def __init__(self):
         super().__init__("sam")
 
@@ -20,6 +30,11 @@ class SamTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            add_to_path(str(self.bin_dir))
+            print(f"{self.name} installed successfully.")
             return
 
         url = self.download_url

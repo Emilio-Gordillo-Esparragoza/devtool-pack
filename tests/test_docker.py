@@ -19,22 +19,32 @@ def test_docker_download_url_windows():
 
 def test_docker_download_url_linux_empty():
     """Linux has no static binary URL — convenience script is used instead."""
-    with patch("devpack.tools.base_tool._current_os", return_value="linux"), \
-         patch("devpack.tools.base_tool._current_arch", return_value="amd64"):
+    with (
+        patch("devpack.tools.base_tool._current_os", return_value="linux"),
+        patch("devpack.tools.base_tool._current_arch", return_value="amd64"),
+    ):
         tool = DockerTool()
         assert tool.download_url == ""
 
 
 @patch("devpack.tools.docker.shutil.which")
-def test_docker_tool_is_installed_false(mock_which):
+@patch("devpack.env.package_manager.get_package_manager")
+@patch("devpack.env.package_manager.PackageManager.detect", return_value="none")
+def test_docker_tool_is_installed_false(mock_detect, mock_get_pm, mock_which):
     mock_which.return_value = None
+    mock_pm = mock_get_pm.return_value
+    mock_pm.is_installed.return_value = False
     tool = DockerTool()
     assert not tool.is_installed()
 
 
 @patch("devpack.tools.docker.shutil.which")
-def test_docker_tool_is_installed_true(mock_which):
+@patch("devpack.env.package_manager.get_package_manager")
+@patch("devpack.env.package_manager.PackageManager.detect", return_value="none")
+def test_docker_tool_is_installed_true(mock_detect, mock_get_pm, mock_which):
     mock_which.return_value = "/usr/bin/docker"
+    mock_pm = mock_get_pm.return_value
+    mock_pm.is_installed.return_value = False
     tool = DockerTool()
     assert tool.is_installed()
 
@@ -54,8 +64,14 @@ def test_docker_tool_install_windows(
 
     tool = DockerTool()
     fake_url = "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
-    with patch.object(tool, "is_installed", return_value=False), \
-         patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
+    with (
+        patch.object(tool, "is_installed", return_value=False),
+        patch.object(
+            type(tool),
+            "download_url",
+            new_callable=lambda: property(lambda self: fake_url),
+        ),
+    ):
         tool.install()
 
     mock_download_file.assert_called_once()
@@ -67,7 +83,9 @@ def test_docker_tool_install_windows(
 @patch("devpack.tools.docker.shutil")
 @patch("devpack.tools.docker.add_to_path")
 def test_docker_install_unix_linux(mock_add_to_path, mock_shutil, mock_subprocess):
-    mock_shutil.which.return_value = None  # skip the add_to_path(Path(...).parent) branch
+    mock_shutil.which.return_value = (
+        None  # skip the add_to_path(Path(...).parent) branch
+    )
 
     tool = DockerTool()
     with patch("platform.system", return_value="Linux"):
@@ -79,9 +97,12 @@ def test_docker_install_unix_linux(mock_add_to_path, mock_shutil, mock_subproces
 @patch("devpack.tools.docker.subprocess")
 @patch("devpack.tools.docker.shutil")
 @patch("devpack.tools.docker.add_to_path")
-def test_docker_install_unix_macos_raises(mock_add_to_path, mock_shutil, mock_subprocess):
+def test_docker_install_unix_macos_raises(
+    mock_add_to_path, mock_shutil, mock_subprocess
+):
     tool = DockerTool()
     import pytest
+
     with patch("platform.system", return_value="Darwin"):
         with pytest.raises(RuntimeError, match="Docker Desktop for macOS"):
             tool._install_unix()

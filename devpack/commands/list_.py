@@ -14,6 +14,7 @@ def list_tools():
         "docker",
         "rust",
         "golang",
+        "node",
     ]
     typer.echo("Available tools:")
     for tool in tools:

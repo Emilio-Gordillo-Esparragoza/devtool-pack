@@ -9,6 +9,16 @@ class KubectlTool(BaseTool):
 
     config_key = "kubectl"
 
+    package_names = {
+        "apt": "kubectl",
+        "pacman": "kubectl",
+        "dnf": "kubectl",
+        "yum": "kubectl",
+        "brew": "kubectl",
+        "choco": "kubernetes-cli",
+        "winget": "Kubernetes.kubectl",
+    }
+
     def __init__(self):
         super().__init__("kubectl")
 
@@ -19,6 +29,11 @@ class KubectlTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            add_to_path(str(self.bin_dir))
+            print(f"{self.name} installed successfully.")
             return
 
         url = self.download_url

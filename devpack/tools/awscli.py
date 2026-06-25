@@ -11,6 +11,16 @@ class AWSCLITool(BaseTool):
 
     config_key = "awscli"
 
+    package_names = {
+        "apt": "awscli",
+        "pacman": "aws-cli-v2",
+        "dnf": "awscli2",
+        "yum": "awscli2",
+        "brew": "awscli",
+        "choco": "awscli",
+        "winget": "Amazon.AWSCLI",
+    }
+
     def __init__(self):
         super().__init__("aws")
 
@@ -21,6 +31,10 @@ class AWSCLITool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print(f"{self.name} is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            print(f"{self.name} installed successfully.")
             return
 
         url = self.download_url

@@ -9,12 +9,13 @@ from devpack.tools.cdk import CDKTool
 from devpack.tools.docker import DockerTool
 from devpack.tools.rust import RustTool
 from devpack.tools.golang import GolangTool
+from devpack.tools.node import NodeTool
 
 
 def install(
     tool: str = typer.Argument(
         ...,
-        help="Tool to install (terraform, awscli, kubectl, git, sam, localstack, cdk, docker, rust, golang)",
+        help="Tool to install (terraform, awscli, kubectl, git, sam, localstack, cdk, docker, rust, golang, node)",
     ),
 ):
     """Install a DevOps tool."""
@@ -29,6 +30,7 @@ def install(
         "docker": DockerTool(),
         "rust": RustTool(),
         "golang": GolangTool(),
+        "node": NodeTool(),
     }
     if tool not in tool_map:
         typer.echo(

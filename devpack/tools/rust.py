@@ -12,6 +12,16 @@ class RustTool(BaseTool):
 
     config_key = "rust"
 
+    package_names = {
+        "apt": "rustc",
+        "pacman": "rust",
+        "dnf": "rust",
+        "yum": "rust",
+        "brew": "rust",
+        "choco": "rust",
+        "winget": "Rustlang.Rust",
+    }
+
     def __init__(self):
         super().__init__("rustc")
 
@@ -20,7 +30,10 @@ class RustTool(BaseTool):
         return self._resolve_url()
 
     def is_installed(self) -> bool:
-        return shutil.which("rustc") is not None
+        return (
+            shutil.which("rustc") is not None
+            or self._is_installed_via_package_manager()
+        )
 
     def get_binary_path(self) -> Path:
         path = shutil.which("rustc")
@@ -29,6 +42,13 @@ class RustTool(BaseTool):
     def install(self) -> None:
         if self.is_installed():
             print("Rust is already installed.")
+            return
+
+        if self._install_via_package_manager():
+            cargo_bin = Path.home() / ".cargo" / "bin"
+            if cargo_bin.exists():
+                add_to_path(str(cargo_bin))
+            print("Rust installed successfully.")
             return
 
         url = self.download_url
