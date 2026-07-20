@@ -66,6 +66,7 @@ def test_docker_tool_install_windows(
     fake_url = "https://desktop.docker.com/win/stable/Docker%20Desktop%20Installer.exe"
     with (
         patch.object(tool, "is_installed", return_value=False),
+        patch.object(tool, "_install_via_package_manager", return_value=False),
         patch.object(
             type(tool),
             "download_url",

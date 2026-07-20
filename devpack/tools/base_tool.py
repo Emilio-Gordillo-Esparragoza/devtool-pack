@@ -125,7 +125,9 @@ class BaseTool(ABC):
         print(
             f"Attempting to install {self.name} via system package manager ({self._pm.detect()})..."
         )
-        success = self._pm.install([self.name], self.package_names)
+        success = self._pm.install(
+            [self.name], {self.name: self.package_names}
+        )
         if success:
             print(f"{self.name} installed successfully via package manager.")
         return success
@@ -134,7 +136,9 @@ class BaseTool(ABC):
         """Check if tool is installed via package manager."""
         if not self.package_names:
             return False
-        return self._pm.is_installed(self.name, self.package_names)
+        return self._pm.is_installed(
+            self.name, {self.name: self.package_names}
+        )
 
     def is_installed(self) -> bool:
         """Check if the tool binary exists in the bin directory or via package manager."""

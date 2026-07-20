@@ -13,7 +13,8 @@ def test_terraform_tool_initialization():
 
 def test_terraform_tool_is_installed_false_by_default():
     tool = TerraformTool()
-    with patch.object(tool, "get_binary_path") as mock_get_path:
+    with patch.object(tool, "_is_installed_via_package_manager", return_value=False), \
+         patch.object(tool, "get_binary_path") as mock_get_path:
         mock_binary_path = MagicMock()
         mock_binary_path.is_file.return_value = False
         with patch("os.access", return_value=False):
@@ -68,6 +69,7 @@ def test_terraform_tool_install(
     tool = TerraformTool()
     fake_url = "https://releases.hashicorp.com/terraform/1.5.0/terraform_1.5.0_windows_amd64.zip"
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
         tool.install()
 

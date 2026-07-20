@@ -29,7 +29,7 @@ def test_install_unknown_tool():
 def test_install_all_known_tools():
     tools = [
         "terraform", "awscli", "kubectl", "git", "sam",
-        "localstack", "cdk", "docker", "rust", "golang",
+        "localstack", "cdk", "docker", "rust", "golang", "node",
     ]
     for tool_name in tools:
         with patch(f"devpack.commands.install.{_tool_class(tool_name)}") as MockTool:
@@ -52,6 +52,7 @@ def _tool_class(name: str) -> str:
         "docker": "DockerTool",
         "rust": "RustTool",
         "golang": "GolangTool",
+        "node": "NodeTool",
     }
     return mapping[name]
 
@@ -64,7 +65,7 @@ def test_list_tools_output():
     result = runner.invoke(app, ["list-tools"])
     assert result.exit_code == 0
     for tool in ("terraform", "awscli", "kubectl", "git", "sam",
-                 "localstack", "cdk", "docker", "rust", "golang"):
+                 "localstack", "cdk", "docker", "rust", "golang", "node"):
         assert tool in result.output
 
 
