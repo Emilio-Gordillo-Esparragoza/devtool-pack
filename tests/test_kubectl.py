@@ -1,6 +1,8 @@
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 
+import pytest
+
 from devpack.tools.kubectl import KubectlTool
 
 
@@ -36,7 +38,8 @@ def test_kubectl_download_url_darwin():
 
 def test_kubectl_is_installed_false():
     tool = KubectlTool()
-    with patch.object(tool, "get_binary_path") as mock_path:
+    with patch.object(tool, "_is_installed_via_package_manager", return_value=False), \
+         patch.object(tool, "get_binary_path") as mock_path:
         mock_path.return_value = MagicMock(is_file=lambda: False)
         with patch("os.access", return_value=False):
             assert not tool.is_installed()
@@ -64,6 +67,7 @@ def test_kubectl_install(mock_os, mock_add_to_path, mock_download_file):
 
     tool = KubectlTool()
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
         tool.install()
 
@@ -81,9 +85,7 @@ def test_kubectl_install_already_installed(capsys):
 def test_kubectl_install_no_url():
     tool = KubectlTool()
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: "")):
-        try:
+        with pytest.raises(RuntimeError, match="kubectl"):
             tool.install()
-            assert False, "Expected RuntimeError"
-        except RuntimeError as e:
-            assert "kubectl" in str(e)

@@ -48,6 +48,7 @@ def test_awscli_install_already_installed(capsys):
 def test_awscli_install_no_url():
     tool = AWSCLITool()
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: "")):
         with pytest.raises(RuntimeError, match="No download URL"):
             tool.install()
@@ -65,6 +66,7 @@ def test_awscli_install_unix_dispatch(mock_os, mock_subprocess, mock_shutil, moc
 
     tool = AWSCLITool()
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)), \
          patch.object(tool, "_install_unix") as mock_unix:
         tool.install()
@@ -87,6 +89,7 @@ def test_awscli_install_windows(mock_os, mock_add_to_path, mock_subprocess, mock
     aws_bin_dir.is_dir.return_value = False
 
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)), \
          patch.object(Path, "mkdir"), \
          patch.object(Path, "__truediv__", return_value=aws_bin_dir):
@@ -112,6 +115,7 @@ def test_awscli_install_unix(mock_os, mock_add_to_path, mock_shutil, mock_subpro
     tool = AWSCLITool()
     # Patch _install_unix directly to avoid zipfile/tempfile plumbing
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)), \
          patch.object(tool, "_install_unix") as mock_unix:
         tool.install()

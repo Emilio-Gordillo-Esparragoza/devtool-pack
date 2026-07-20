@@ -45,6 +45,7 @@ def test_golang_tool_install(
     tool = GolangTool()
     fake_url = "https://go.dev/dl/go1.21.5.windows-amd64.zip"
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
         tool.install()
 

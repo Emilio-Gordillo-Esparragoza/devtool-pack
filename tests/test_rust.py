@@ -37,7 +37,8 @@ def test_rust_download_url_darwin():
 def test_rust_tool_is_installed_false(mock_which):
     mock_which.return_value = None
     tool = RustTool()
-    assert not tool.is_installed()
+    with patch.object(tool, "_is_installed_via_package_manager", return_value=False):
+        assert not tool.is_installed()
 
 
 @patch("devpack.tools.rust.shutil.which")
@@ -65,6 +66,7 @@ def test_rust_tool_install(
     tool = RustTool()
     fake_url = "https://static.rust-lang.org/rustup/dist/i686-pc-windows-gnu/rustup-init.exe"
     with patch.object(tool, "is_installed", return_value=False), \
+         patch.object(tool, "_install_via_package_manager", return_value=False), \
          patch.object(type(tool), "download_url", new_callable=lambda: property(lambda self: fake_url)):
         tool.install()
 
